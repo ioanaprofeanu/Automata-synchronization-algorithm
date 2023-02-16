@@ -1,0 +1,68 @@
+## Profeanu Ioana, 333CA
+# LFA Homework - README file
+-------------------------------------------------------------------------------
+* Program Description
+  * Implemented a program which uses a synchronization algorithm for an auto-
+  mata without information about the current state it is in.
+-------------------------------------------------------------------------------
+* Accessible Problem
+  * in order to find all accessible states starting from the sources, we need
+  to traverse the graph of states;
+  * for that, we use a BFS algorithm [1] starting from each source state, in
+  which we use a color array to mark if a state was visited; we use a queue in
+  which we add each new state we visit;
+  * while the queue has elements, we pop the queue and for each symbol, we make
+  the transition; if the state has not yet been visited, we add it to the queue
+  and to the sorted set of accessible states; after visiting all the neighbors
+  of the current state, we pop it from the queue;
+-------------------------------------------------------------------------------
+* Synchronize Problem
+  * in order to find the final merging sequence for the source states, we need
+  to find the merging sequence for two source states, then check if that se-
+  quence is merging for all the source states; repeat the process for each
+  result merging state, until only one merging state is left;
+  * to implement that, the starting available states will be the source states;
+  for the first two of them, we apply an iterative DFS algorithm which tries to
+  find the merging sequence;
+  * the DFS algorithm uses a stack and an array of visited pairs - a states
+  sequence pair consists of the two current states and a list of the symbols
+  used for transitioning to those two states;
+  * we add the first pair to the stack and mark it as visited and while the
+  stack is not empty, we pop the top; for each symbol, we calculate the next
+  states for the pair of the two current states (both transition using the same
+  symbol); if the two next states are equal, it means we found the merging
+  sequence; otherwise, add the next pair to the stack (if it has not already
+  been visited);
+  * using the resulted merging sequence, for each available starting states,
+  get the final state after transitioning and add it to a set of final states;
+  add the current merging sequence to the final merging sequence; the new
+  available starting states will be the final states and the algorithm will
+  continue until there is only one element within the final states set (it
+  will be the cell in which all the source states will transition using the
+  resulted synchronizing sequence;
+-------------------------------------------------------------------------------
+* Labyrinth Problem
+  * the problem resumes to transforming the input for the given robots problem
+  into an input for the synchronize problem;
+  * for that, we make the following assignments:
+    * the number of states is: no. lines * no. columns;
+    * the number of symbols will be 4 (the number of possible directions);
+    * the number of input states will be no. robots;
+    * each cell within the matrix will be the state with the index of:
+    cell line * no. columns + cell column;
+    * the source states will be the indices of the states the robots are in;
+    * for each cell of the matrix, we calculate the possible transitions for
+    the robot (basically, the direction is the symbol and we have to calculate
+    the next state for each transition);
+    * thus, for each direction, we check if we can move in that direction using
+    the codification of the cell and check if by moving in that direction we
+    step outside the matrix; if the move can be done, the next transition for
+    that direction will be the index of the neighbor cell, and if not, the
+    state will remain the same one we are currently in;
+-------------------------------------------------------------------------------
+* Sources
+  * [1] BFS algorithm:
+  https://ocw.cs.pub.ro/courses/pa/laboratoare/laborator-07
+  * [2] Algorithm 2, Theorem 1.14, 1.15 used as base for the Synchronize
+  problem: https://www.math.uni.wroc.pl/~kisiel/auto/Homing.pdf
+-------------------------------------------------------------------------------
